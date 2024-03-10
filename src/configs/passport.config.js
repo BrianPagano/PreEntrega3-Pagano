@@ -48,30 +48,34 @@ const initializePassport = () => {
         }
     }))
 
-    passport.use ('github', new GithubStrategy ({
+    passport.use('github', new GithubStrategy({
         clientID: ghClientId,
         clientSecret: ghClientSecret,
         callbackURL: "http://localhost:8080/api/auth/githubcallback"
-    }, async (accessToken, refreshToken, profile, done) =>  {
+    }, async (accessToken, refreshToken, profile, done) => {
         try {
-            const {id, login, name, email} = profile._json
-            const user = await Users.findOne ({email: email})
-            if(!user) {
+            const { id, login, name, email } = profile._json;
+            let user = await Users.findOne({ email: email });
+    
+            if (!user) {
                 const newUserInfo = {
                     first_name: name,
                     email: email,
                     githubId: id,
                     githubUsername: login,
-                }
-                const newUser = await Users.create(newUserInfo)
-                return done (null, newUser)
-            } return done (null, user)
-           
+                };
+    
+                user = await Users.create(newUserInfo);
+            }
+    
+            console.log('Usuario actualizado con éxito:', user);
+            done(null, user);
         } catch (error) {
-            console.log (error)
+            console.error('Error:', error);
+            done(error); // Manejamos errores
         }
-     })
-    )
+    }));
+    
 
     passport.serializeUser((user, done) => {
         done(null, user._id)
