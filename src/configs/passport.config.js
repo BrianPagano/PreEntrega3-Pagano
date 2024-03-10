@@ -2,10 +2,11 @@ const passport = require ('passport')
 const local = require ('passport-local')
 const GithubStrategy = require ('passport-github2')
 const { useValidPassword } = require('../utils/cryp-password.util')
-const { ghClientId, ghClientSecret } = require('./app.config')
+const { ghClientId, ghClientSecret, userEmail } = require('./app.config')
 const NewUserDto = require('../DTO/new-user.dto')
 const UserService = require ('../services/user.service')
 const Users = require('../DAO/models/user.model')
+
 
 const LocalStrategy = local.Strategy
 

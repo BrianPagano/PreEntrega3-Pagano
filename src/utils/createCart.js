@@ -1,3 +1,5 @@
+//esto aun no se utiliza, verificar si puedo modulizar el codigo:
+
 function createCartAndAssignToUser(userData) {
     fetch(`/api/carts`, {
         method: 'POST',

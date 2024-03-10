@@ -1,5 +1,7 @@
 const UserDao = require ('../DAO/user-dao.mongo')
 const User = new UserDao()
+const transport = require('../utils/nodemailer.util')
+const { userEmail } = require('../configs/app.config')
 
 async function getUserCart(uid) {
     try {
@@ -17,15 +19,25 @@ async function updateUserCart(uid, cid) {
         throw new Error('Error al actualizar el carrito del usuario')
     }
 }
-
 async function createUser(newUserDto) {
     try {
-        const createdUser = await User.createUser(newUserDto)
-        return createdUser
+        const createdUser = await User.createUser(newUserDto);
+        await transport.sendMail({
+            from: userEmail,
+            to: createdUser.email,
+            subject: 'Bienvenido a VinoMania',
+            html: `
+                <h1>Hola ${createdUser.first_name}</h1>
+                <p>Mira las promociones actuales</p>
+            `
+        });
+        return createdUser;
     } catch (error) {
-        throw new Error('Error al crear un usuario')
+        console.error('Error al crear un usuario:', error);
+        throw new Error('Error al crear un usuario');
     }
 }
+
 
 module.exports = {
     getUserCart,
