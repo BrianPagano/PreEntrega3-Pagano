@@ -23,8 +23,8 @@ const initializePassport = () => {
 
        const NewUserInfo = new NewUserDTO (req.body, password)
 
-       await Users.create(NewUserInfo)
-        return done (null, NewUserInfo)
+       const createdUser = await Users.create(NewUserInfo)
+        return done (null, createdUser)
         } catch (error) {
             return done (error)
         }

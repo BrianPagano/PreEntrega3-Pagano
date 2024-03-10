@@ -3,56 +3,9 @@ document.querySelectorAll('.botonAgregarCarrito').forEach(function(button) {
     let pid = this.dataset.pid
     let cid = this.dataset.cid
 
-   if (!cid) {
-    try {
-     const response = await fetch(`/api/users/user-cart`, {
-        method: 'GET',
-      })
-      data = await response.json()
-      cid = data.cid
-    } catch (error){
-      console.error (error)
-    }
-  }
-  
-    console.log('PID:', pid)
-    console.log("CID:", cid) 
-    
-    if (!cid) {
-
-      // Realizar una solicitud POST para crear un id de carrito vacio
-      fetch(`/api/carts`, {
-        method: 'POST',
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        cid = data.cid       // Actualizar el CID con el valor devuelto por la solicitud
-        // Realizar la solicitud Fetch para actualizar el usuario y asignarle el ID del carrito
-        fetch(`/api/users/`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ cart: cid })
-        })
-        .then(response => response.json())
-        .then(updatedUser => {
-          console.log('Usuario actualizado con éxito:', updatedUser)
-          // Ahora que has actualizado el usuario con el ID del carrito, puedes agregar el producto al carrito
-          agregarProductoAlCarrito(cid, pid)
-        })
-        .catch(error => {
-          console.error('Error al actualizar el usuario:', error)
-        })
-      })
-      .catch(error => {
-        console.error('Error al crear el carrito:', error)
-      })
-    } else {
-      // Si ya hay un CID, agregar el producto al carrito directamente
+      // gregar el producto al carrito
       agregarProductoAlCarrito(cid, pid)
-    }
+
   })
 })
 

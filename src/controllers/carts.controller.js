@@ -21,6 +21,7 @@ router.get('/:cid', async (req, res) => {
     try {
         //utilizo params el id
         const { cid } = req.params
+        const { user } = req.session
         //realizo una busqueda por id
         const filterById =  await CartService.getCartByID(cid)
         if (!filterById) {
@@ -29,6 +30,7 @@ router.get('/:cid', async (req, res) => {
             // Calcular los subtotales y el total del carrito
             const { subtotal, total } = calculateSubtotalAndTotal(filterById.products)
               res.render ('cart', { 
+                user,
                 subtotal,
                 filterById,
                 total,

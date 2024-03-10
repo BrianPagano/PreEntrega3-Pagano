@@ -1,9 +1,9 @@
-const ProductDao = require ('../DAO/product-dao.mongo')
-const Product = new ProductDao()
+const ProductRepository = require ('../repositories/product.reposity')
+const productReposity = new ProductRepository()
 
 const getProductByID = async pid => {
     try {
-      const findID = await Product.getProductByID(pid)
+      const findID = await productReposity.getProductByID(pid)
       return findID
     } catch (error) {
         throw error
@@ -12,7 +12,7 @@ const getProductByID = async pid => {
 
 const addProduct = async product => {
  try {
-      const result = await Product.addProduct(product) 
+      const result = await productReposity.addProduct(product) 
       return result
   } catch (error) {
       throw error
@@ -21,7 +21,7 @@ const addProduct = async product => {
 
 const updateProduct = async productUpdated => {
   try {
-       await Product.updateProduct(productUpdated) 
+       await productReposity.updateProduct(productUpdated) 
    } catch (error) {
        throw error
      }  
@@ -29,7 +29,7 @@ const updateProduct = async productUpdated => {
 
  const deleteProduct = async pid => {
   try {
-       const result = await Product.deleteProduct(pid) 
+       const result = await productReposity.deleteProduct(pid) 
        return result
    } catch (error) {
        throw error

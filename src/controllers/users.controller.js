@@ -12,15 +12,12 @@ router.get ('/user-cart', async (req, res) => {
             const uid = req.user._id
             const userCart = await UserService.getUserCart(uid)
             if (!userCart) {
-                return res.status(404).json({ error: 'Usuario no encontrado o carrito vacío' })
+                return res.status(404).json({ error: 'Usuario no encontrado' })
             }
-            // Guardar el valor cid en la sesión del usuario
-            req.session.cid = userCart
-            console.log ('el cid es:', userCart)
             res.status(200).json({status: 'success', cid: userCart})
         }
     } catch (error) {
-        console.error('Error al actualizar el carrito del usuario:', error.message)
+        console.error('error:', error.message)
         res.status(500).json({ error: 'Internal Server Error' })
     }
 })
@@ -46,10 +43,8 @@ router.put('/', async (req, res) => {
         const { cart: cid } = req.body
         // Actualiza el carrito del usuario en la base de datos
         await UserService.updateUserCart(uid, cid)
-        // Actualizar el valor de user.cart en la sesión del usuario
-        req.session.user.cart = cid
-          // Enviar una respuesta al cliente
-          res.status(200).json({ status: 'success', message: 'User cart updated successfully' })
+        // Enviar una respuesta al cliente
+        res.status(200).json({ status: 'success', message: 'User cart updated successfully' })
     } catch (error) {
         console.error('Error al actualizar el carrito del usuario:', error.message)
         res.status(500).json({ error: 'Internal Server Error' })
