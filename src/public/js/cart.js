@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const cartButton = document.getElementById('cart')
+    if (cartButton) {
         cartButton.addEventListener('click', async () => {
             try {
                 const response = await fetch(`/api/users/user-cart`, {
@@ -11,12 +12,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     window.location.href = `/login`
                     return
                 }
-                    window.location.href = `/api/carts/${cid}`
+                window.location.href = `/api/carts/${cid}`
             } catch (error) {
                 console.error(error)
             }
         })
-    
+    }
 
     const cancelarCompraButton = document.querySelector('.cancelarCompra')
     if (cancelarCompraButton) {
@@ -42,9 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         button.addEventListener('click', function() {
             const cid = this.dataset.cid
             const pid = this.dataset.pid
-
-            console.log('CID:', cid)
-            console.log('PID:', pid)
 
             // Realizar una solicitud Fetch para cancelar la compra
             fetch(`/api/carts/${cid}/products/${pid}`, {

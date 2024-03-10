@@ -18,7 +18,17 @@ async function updateUserCart(uid, cid) {
     }
 }
 
+async function createUser(newUserDto) {
+    try {
+        const createdUser = await User.createUser(newUserDto)
+        return createdUser
+    } catch (error) {
+        throw new Error('Error al crear un usuario')
+    }
+}
+
 module.exports = {
     getUserCart,
-    updateUserCart
+    updateUserCart,
+    createUser,
 }

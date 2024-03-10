@@ -1,10 +1,11 @@
 const passport = require ('passport')
 const local = require ('passport-local')
 const GithubStrategy = require ('passport-github2')
-const Users = require('../DAO/models/user.model')
 const { useValidPassword } = require('../utils/cryp-password.util')
 const { ghClientId, ghClientSecret } = require('./app.config')
-const NewUserDTO = require('../DTO/new-user.dto')
+const NewUserDto = require('../DTO/new-user.dto')
+const UserService = require ('../services/user.service')
+const Users = require('../DAO/models/user.model')
 
 const LocalStrategy = local.Strategy
 
@@ -17,13 +18,12 @@ const initializePassport = () => {
         try {
         const user = await Users.findOne ({email: username})
         if(user) {
-            console.log ('User Exists')
+            console.log ('El correo ya se encuentra registrado')
             return done (null, false)
         }
 
-       const NewUserInfo = new NewUserDTO (req.body, password)
-
-       const createdUser = await Users.create(NewUserInfo)
+        const NewUserInfo = new NewUserDto (req.body, password)
+        const createdUser = await UserService.createUser(NewUserInfo)
         return done (null, createdUser)
         } catch (error) {
             return done (error)
