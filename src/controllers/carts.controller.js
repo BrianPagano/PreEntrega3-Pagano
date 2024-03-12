@@ -4,6 +4,7 @@ const router = Router()
 const CartService = require ('../services/cart.service.js')
 const ProductsService = require ('../services/products.service.js')
 const calculateSubtotalAndTotal = require('../utils/calculoTotales-Cart.util.js')
+const authorization = require('../middlewares/authorization-middleware.js')
 
 //crear un carrito
 router.post('/', async (req, res) => {
@@ -43,7 +44,7 @@ router.get('/:cid', async (req, res) => {
 })
 
 //agregar producto indicando el carrito (cid) y el producto (pid)
-router.post('/:cid/products/:pid', async (req, res) => {
+router.post('/:cid/products/:pid', authorization('user'), async (req, res) => {
     try {
         const { cid, pid } = req.params
         const product = await ProductsService.getProductByID(pid)
@@ -85,7 +86,7 @@ router.put('/:cid', async (req, res) => {
 })
 
 //actualizar producto pasando el cid y pid
-router.put('/:cid/products/:pid', async (req, res) => {
+router.put('/:cid/products/:pid', authorization('user'), async (req, res) => {
     try {
         const { cid, pid } = req.params
         const { quantity } = req.body
@@ -106,7 +107,7 @@ router.put('/:cid/products/:pid', async (req, res) => {
 
 
 //borrar un solo producto del carrito enviando por parametros el cid y pid
-router.delete('/:cid/products/:pid', async (req, res) => {
+router.delete('/:cid/products/:pid', authorization('user'), async (req, res) => {
     try {
         const { cid, pid } = req.params
         const result = await CartService.deleteProductInCart(cid, pid)
@@ -123,7 +124,7 @@ router.delete('/:cid/products/:pid', async (req, res) => {
 })
 
 //delete de todos los productos del carrito
-router.delete('/:cid', async (req, res) => {
+router.delete('/:cid', authorization('user'), async (req, res) => {
     try {
         const { cid } = req.params
         const result = await CartService.deleteProductsInCart(cid)

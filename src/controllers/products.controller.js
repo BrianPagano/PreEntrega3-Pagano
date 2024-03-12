@@ -1,8 +1,8 @@
     const { Router } = require('express')
     const router = Router()
-    
     const { getProducts } = require('../utils/products.util.js')
     const ProductsService = require ('../services/products.service.js')
+    const authorization = require('../middlewares/authorization-middleware.js')
 
 router.get('/', async (req, res) => {
     try {
@@ -61,7 +61,7 @@ router.get('/:pid', async (req, res) => {
     }
 })
 
-router.post("/", async (req, res) => {
+router.post("/", authorization('admin'), async (req, res) => {
     try {
       const { code, description, price, stock, thumbnail, title, category } = req.body
       const result = await ProductsService.addProduct({code,description,price,stock,thumbnail,title,category})
@@ -78,7 +78,7 @@ router.post("/", async (req, res) => {
     }
   })
 
-router.put('/:pid', async (req, res) => {
+router.put('/:pid', authorization('admin'), async (req, res) => {
     try {
         const { pid } = req.params
         const { ...product } = req.body
@@ -94,7 +94,7 @@ router.put('/:pid', async (req, res) => {
     }
 })
 
-router.delete ('/:pid', async (req, res) => {
+router.delete ('/:pid', authorization('admin'), async (req, res) => {
     try {
         const { pid } = req.params
         const result = await ProductsService.deleteProduct(pid)

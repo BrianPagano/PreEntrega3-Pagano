@@ -2,7 +2,7 @@ const passport = require ('passport')
 const local = require ('passport-local')
 const GithubStrategy = require ('passport-github2')
 const { useValidPassword } = require('../utils/cryp-password.util')
-const { ghClientId, ghClientSecret, userEmail } = require('./app.config')
+const { ghClientId, ghClientSecret } = require('./app.config')
 const NewUserDto = require('../DTO/new-user.dto')
 const UserService = require ('../services/user.service')
 const Users = require('../DAO/models/user.model')
@@ -84,7 +84,7 @@ const initializePassport = () => {
 
     passport.deserializeUser(async (id, done) => {
         try {
-            const user = await Users.findById(id)
+            const user = await Users.findById(id, { password: 0 })
             done(null, user)
         } catch (error) {
             done(error)

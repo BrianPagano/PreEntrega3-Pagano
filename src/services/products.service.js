@@ -1,4 +1,4 @@
-const ProductRepository = require ('../repositories/product.reposity')
+const ProductRepository = require ('../repositories/product.repository')
 const productReposity = new ProductRepository()
 
 const getProductByID = async pid => {

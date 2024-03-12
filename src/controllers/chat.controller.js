@@ -1,7 +1,8 @@
 const { Router } = require('express')
 const router = Router()
+const authorization = require('../middlewares/authorization-middleware.js')
 
-router.get('/', async (req, res) => {
+router.get('/', authorization('user'), async (req, res) => {
     try {
      res.render ('chat', {style:'style.css'})   
     } catch (error) {
@@ -9,5 +10,6 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' })
     }
 })
+
 
 module.exports = router

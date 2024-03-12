@@ -58,6 +58,6 @@ getUsername()
 
 socket.on('messageLogs', chats => {
   let messages = ''
-  chats.forEach(chat => (messages = `${chat.user} dice:${chat.message} <hr>` + messages))
+  chats.forEach(chat => (messages = `${chat.user} dice: ${chat.message} <hr>` + messages))
   messageLogs.innerHTML = messages
 })

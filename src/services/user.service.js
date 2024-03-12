@@ -1,7 +1,8 @@
 const UserDao = require ('../DAO/user-dao.mongo')
+const messageManager = require('../repositories')
 const User = new UserDao()
-const transport = require('../utils/nodemailer.util')
-const { userEmail } = require('../configs/app.config')
+
+
 
 async function getUserCart(uid) {
     try {
@@ -22,15 +23,8 @@ async function updateUserCart(uid, cid) {
 async function createUser(newUserDto) {
     try {
         const createdUser = await User.createUser(newUserDto);
-        await transport.sendMail({
-            from: userEmail,
-            to: createdUser.email,
-            subject: 'Bienvenido a VinoMania',
-            html: `
-                <h1>Hola ${createdUser.first_name}</h1>
-                <p>Mira las promociones actuales</p>
-            `
-        });
+        //aca va el adapter
+        messageManager.sendMessage(createdUser)
         return createdUser;
     } catch (error) {
         console.error('Error al crear un usuario:', error);

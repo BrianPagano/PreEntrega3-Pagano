@@ -3,12 +3,14 @@ const Users = require('../DAO/models/user.model')
 const { createHash } = require('../utils/cryp-password.util')
 const passport = require('passport')
 const router = Router()
+const SensibleDTO = require ('../DTO/sensible-user')
+
 
 
 router.post ('/', passport.authenticate('login', {failureRedirect: '/auth/fail-login'}) , async (req, res) => {
     try {
         const {email} = req.body
-        const lowercaseEmail = email.toLowerCase();
+        const lowercaseEmail = email.toLowerCase()
 
         req.session.user = {
             first_name: req.user.first_name,
@@ -27,11 +29,12 @@ router.post ('/', passport.authenticate('login', {failureRedirect: '/auth/fail-l
 
 router.get('/current', (req, res) => {
     if (req.isAuthenticated()) {
-        res.json({ message: req.user });
+        const userDTO = new SensibleDTO(req.user)
+        res.json({ message: userDTO })
     } else {
-        res.status(401).json({status: 'error', message: 'User is not authenticated' });
+        res.status(401).json({status: 'error', message: 'User is not authenticated' })
     }
-});
+})
 
 
 router.get('/fail-login', (req, res) => {
@@ -43,11 +46,11 @@ router.get('/logout', async (req, res) => {
     try {
         req.session.destroy(err => {
             if (err) {
-                return res.status(500).json({ error: 'Internal Server Error' });
+                return res.status(500).json({ error: 'Internal Server Error' })
             } else {
-                return res.status(200).json({ message: 'Logout successful' });
+                return res.status(200).json({ message: 'Logout successful' })
             }
-        });
+        })
     } catch (error) {
         console.error ('Error:', error.message)
         res.status(500).json({ error: error })
