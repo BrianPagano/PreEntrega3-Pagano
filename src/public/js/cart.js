@@ -22,20 +22,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cancelarCompraButton = document.querySelector('.cancelarCompra')
     if (cancelarCompraButton) {
         cancelarCompraButton.addEventListener('click', function() {
-            const cid = this.dataset.cid
+            try {
+                const cid = this.dataset.cid
 
-            // Realizar una solicitud Fetch para cancelar la compra
-            fetch(`/api/carts/${cid}`, {
-                method: 'DELETE',
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                window.location.reload()
-            })
-            .catch(error => {
-                console.error('Error al cancelar la compra:', error)
-            })
+                // Realizar una solicitud Fetch para cancelar la compra
+                fetch(`/api/carts/${cid}`, {
+                    method: 'DELETE',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    window.location.reload()
+                })
+            } catch (error) {
+                console.error('Error al procesar la solicitud:', error)
+            }
         })
     }
 
@@ -58,4 +59,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             })
         })
     })
+
+    const finalizarCompra = document.getElementById('finalizarCompra');
+    if (finalizarCompra) {
+        finalizarCompra.addEventListener('click', async function() {
+            const cid = this.dataset.cid;
+            try {    
+                const response = await fetch(`/api/carts/${cid}/purchase`, {
+                    method: 'POST',
+                });
+    
+                if (!response.ok) {
+                    throw new Error('La solicitud no fue exitosa');
+                }
+                const data = await response.json();
+                console.log(data);
+            } catch (error) {
+                console.error('Error al finalizar la compra:', error);
+                // Aquí puedes manejar el error, como mostrar un mensaje de error al usuario
+                alert('Error al finalizar la compra. Por favor, inténtalo de nuevo más tarde.');
+            }
+        });
+    }
+    
 })

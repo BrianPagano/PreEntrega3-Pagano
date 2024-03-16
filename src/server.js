@@ -25,6 +25,11 @@ hbs.handlebars.registerHelper('multiply', function(a, b) {
   return a * b;
 });
 
+// Define helper iqual
+hbs.handlebars.registerHelper('isEqual', function(arg1, arg2, options) {
+  return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
+});
+
 app.use(express.json())
 app.use(express.static(process.cwd() + '/src/public'))
 app.use(express.urlencoded ({extended : true}))

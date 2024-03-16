@@ -21,11 +21,11 @@
                         Precio:${{price}} Cantidad:{{stock}}
                     </p>
                 </div>
-                {{#if ../user.first_name}}
-                <button class="botonAgregarCarrito btn btn2" data-pid="{{_id}}" data-cid="{{../user.cart}}">
-                    Agregar al Carrito
-                </button> 
-                {{/if}}
+                {{#isEqual ../user.role 'user'}}
+                    <button class="botonAgregarCarrito btn btn2" data-pid="{{_id}}" data-cid="{{../user.cart}}">
+                        Agregar al Carrito
+                    </button> 
+                {{/isEqual}}
             </div>
         {{/each}}
         </div>
@@ -38,6 +38,9 @@
             {{/if}}
         </div>
     </section>
+<footer>
+    <p> Created by Brian Pagano | todos los derechos reservados</p>
+</footer>
 </main>
 
 

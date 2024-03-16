@@ -1,4 +1,5 @@
 const Carts = require('./models/carts.model')
+const Tickets = require ('./models/purchase.model.js')
 const ProductsService = require ('../services/products.service.js')
 const mongoose = require('mongoose')
 
@@ -9,19 +10,19 @@ class CartDao {
         try {
             const newCart = {
                 products: []
-            };
+            }
     
             // Crear el carrito y capturar su ID
-            const createdCart = await Carts.create(newCart);
+            const createdCart = await Carts.create(newCart)
     
             // Obtener el ID del carrito creado
-            const cartId = createdCart._id;
+            const cartId = createdCart._id
             console.log ('El cart id es:', cartId)
     
-            return { success: true, message: 'Carrito creado correctamente', cid: cartId };
+            return { success: true, message: 'Carrito creado correctamente', cid: cartId }
         } catch (error) {
-            console.error('Error al crear el carrito:', error.message);
-            return { success: false, message: 'Error interno al procesar la solicitud.' };
+            console.error('Error al crear el carrito:', error.message)
+            return { success: false, message: 'Error interno al procesar la solicitud.' }
         }
     }
 
@@ -188,7 +189,21 @@ class CartDao {
         return { success: false, message: 'Internal server error' }
     }
   }
+
+  async createPurchase(NewPurchaseDTO) {
+    try {
+        const createdOrder = await Tickets.create(NewPurchaseDTO)
+        return { success: true, message: 'ticket creado correctamente', createdOrder}
+    } catch (error) {
+        console.error('Error al crear el ticket', error.message)
+        return { success: false, message: 'Error interno al procesar la solicitud.' }
+    }
 }
+
+}
+
+
+
 
 module.exports = CartDao
 

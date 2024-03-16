@@ -84,7 +84,7 @@ const initializePassport = () => {
 
     passport.deserializeUser(async (id, done) => {
         try {
-            const user = await Users.findById(id, { password: 0 })
+            const user = await Users.findById(id)
             done(null, user)
         } catch (error) {
             done(error)

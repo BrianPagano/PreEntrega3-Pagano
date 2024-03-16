@@ -5,17 +5,8 @@ const CartService = require ('../services/cart.service.js')
 const ProductsService = require ('../services/products.service.js')
 const calculateSubtotalAndTotal = require('../utils/calculoTotales-Cart.util.js')
 const authorization = require('../middlewares/authorization-middleware.js')
+const NewPurchaseDTO = require('../DTO/new-purchase.dto.js')
 
-//crear un carrito
-router.post('/', async (req, res) => {
-    try {
-        const result = await CartService.addCart() // Capturar el resultado de addCart()
-        res.status(201).json({ message: 'Carrito creado correctamente', cid: result.cid })
-    } catch (error) {
-        console.error('Error al cargar productos:', error.message)
-        res.status(500).json({ error: 'Internal Server Error' })
-    }
-})
 
 //mostrar el carrito elegido
 router.get('/:cid', async (req, res) => {
@@ -43,6 +34,17 @@ router.get('/:cid', async (req, res) => {
     }
 })
 
+//crear un carrito
+router.post('/', async (req, res) => {
+    try {
+        const result = await CartService.addCart() // Capturar el resultado de addCart()
+        res.status(201).json({ message: 'Carrito creado correctamente', cid: result.cid })
+    } catch (error) {
+        console.error('Error al cargar productos:', error.message)
+        res.status(500).json({ error: 'Internal Server Error' })
+    }
+})
+
 //agregar producto indicando el carrito (cid) y el producto (pid)
 router.post('/:cid/products/:pid', authorization('user'), async (req, res) => {
     try {
@@ -62,6 +64,21 @@ router.post('/:cid/products/:pid', authorization('user'), async (req, res) => {
         }
     } catch (error) {
         console.error('Error al cargar productos:', error.message)
+        res.status(500).json({ error: 'Internal Server Error' })
+    }
+})
+
+//crear una orden de compra
+router.post('/:cid/purchase', async (req, res) => {
+    try {
+        //const { cid } = req.params
+        const { user } = req.session
+        const totalPrice = 100
+        const NewTicketInfo = new NewPurchaseDTO (totalPrice, user)
+        const result = await CartService.createPurchase(NewTicketInfo) 
+        res.status(201).json({ message: 'orden creada correctamente', order: result})
+    } catch (error) {
+        console.error('Error al crear una orden:', error.message)
         res.status(500).json({ error: 'Internal Server Error' })
     }
 })

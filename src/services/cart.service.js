@@ -1,4 +1,5 @@
 const CartDao = require ('../DAO/cart-dao.mongo')
+const NewPurchaseDTO = require('../DTO/new-purchase.dto')
 const Cart = new CartDao()
 
 const addCart = async () => {
@@ -27,6 +28,15 @@ const addCart = async () => {
          throw error
        }  
    }
+
+  const createPurchase = async (NewPurchaseDTO) => {
+    try {
+      const result = await Cart.createPurchase(NewPurchaseDTO)
+      return result
+  } catch (error) {
+      throw error
+    }  
+}
 
    const updateCart = async (cid, updatedProducts) => {
     try {
@@ -65,5 +75,5 @@ const addCart = async () => {
    }
 
   module.exports = {
-    addCart, getCartByID, addProductInCart, updateCart, updateProductQuantity, deleteProductInCart, deleteProductsInCart
+    addCart, getCartByID, addProductInCart, updateCart, updateProductQuantity, deleteProductInCart, deleteProductsInCart, createPurchase
   }
