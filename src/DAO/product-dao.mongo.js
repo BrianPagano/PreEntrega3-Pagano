@@ -1,4 +1,4 @@
-const NewProductDto = require('../DTO/new-product.dto');
+const NewProductDto = require('../DTO/new-product.dto')
 const Products = require('./models/products.model')
 
 class ProductDao {
@@ -8,7 +8,7 @@ class ProductDao {
           return await Products.findOne({ _id: id, status: true })
       } catch (error) {
           console.log('Error al obtener el producto por ID:', error.message)
-          throw error; // Lanza la excepción para ser manejada en un nivel superior
+          throw error // Lanza la excepción para ser manejada en un nivel superior
       } 
   }
 
@@ -68,6 +68,36 @@ class ProductDao {
         return false
       }
     }
+
+    
+  async updateStock(productsInStock) {
+    try {
+        // Itera sobre cada producto en productsInStock
+        for (const product of productsInStock) {
+            // Encuentra el producto por su ID
+            const productId = product.product._id
+            const quantity = product.quantity
+
+            const foundProduct = await Products.findById(productId)
+
+            if (!foundProduct) {
+                throw new Error(`Producto con ID ${productId} no encontrado`)
+            }
+
+            // Actualiza el stock restando la cantidad vendida
+            foundProduct.stock -= quantity
+
+            // Guarda los cambios en la base de datos
+            await foundProduct.save()
+            console.log(`Stock del producto ${foundProduct.title} actualizado correctamente`)
+        }
+
+        console.log('Todos los stocks actualizados correctamente')
+    } catch (error) {
+        console.error('Error al actualizar el stock:', error)
+    }
+  }
+
   }
 
 module.exports = ProductDao

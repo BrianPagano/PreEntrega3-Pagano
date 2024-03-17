@@ -35,7 +35,16 @@ const updateProduct = async productUpdated => {
        throw error
      }  
  }
-
+ 
+ const updateStock = async productsInStock => {
+  try {
+      const result = await productReposity.updateStock(productsInStock) 
+      return result
+  } catch (error) {
+      throw error
+    }  
+ }
+ 
   module.exports = {
-    getProductByID, addProduct, updateProduct, deleteProduct
+    getProductByID, addProduct, updateProduct, deleteProduct, updateStock
   }

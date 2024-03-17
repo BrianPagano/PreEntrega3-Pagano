@@ -42,8 +42,8 @@ router.get('/:cid/purchase', async (req, res) => {
         const { user } = req.session
         const { total, orderNumber } = req.query
         const filterById =  await CartService.getCartByID(cid)
-        if (!filterById) {
-            return res.status(404).json({ error: 'El carrito con el ID buscado no existe.'})
+        if (!filterById || !user) {
+            return res.status(404).json({ error: 'Error a ver la orden de compra.'})
         } 
         res.render ('ticket', { 
             user,
@@ -99,15 +99,15 @@ router.post('/:cid/purchase', async (req, res) => {
         if (!filterById) {
             return res.status(404).json({ error: 'El carrito con el ID buscado no existe.'})
         }   
-        
         // evaluar stock y divido en 2 arrays
         const { productsInStock, productsOutOfStock } = separateStocks(filterById.products)
+        // descuento del stock los productos comprados
+        await ProductsService.updateStock(productsInStock)
         // actualizo el carrito con los productos solo sin stock
         const updatedCart = await CartService.updateCart(cid, productsOutOfStock)
         if (!updatedCart.success) {
             return res.status(500).json({ error: updatedCart.message })
         }
-        
         // Calcular el total del carrito
         const { total }  = calculateSubtotalAndTotal(productsInStock)
         const NewTicketInfo = new NewPurchaseDTO (total, user)
