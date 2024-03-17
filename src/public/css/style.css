@@ -199,40 +199,7 @@
 .parrafoCarrito {
     margin: 0px;
     font-size: 2.5vw;
-}
-
-@media screen and (min-width: 600px) {
-    .carritoFinal {
-    margin: 0px 50px 0px 50px;; 
-    }
-
-    .imgCarrito {
-        width: 80px;
-        height: 110px;
-        border-radius: 10%;
-    }
-
-    .parrafoCarrito {
-        font-size: 16px;
-    }
-}
-
-@media screen and (min-width: 1024px) {
-    .carritoFinal {
-    margin: 0px 100px 20px 100px; 
-    }
-
-    .imgCarrito {
-        width: 100px;
-        height: 130px;
-        border-radius: 10%;
-    }
-
-    .parrafoCarrito {
-        font-size: 20px;
-    }
-}
-   
+}   
 
 .alineadoCarrito {
   display: grid;
@@ -364,12 +331,24 @@ width: 100%;
 .checkout:hover::before {
   width: 160%;
 }
-
 /*Media querys para ajustar las pantallas de tablet y compu*/
 
 @media screen and (min-width: 600px) {
+  .carritoFinal {
+  margin: 0px 40px 17px 40px;; 
+  }
+
+  .imgCarrito {
+      width: 70px;
+      height: 100px;
+      border-radius: 10%;
+  }
+
+  .parrafoCarrito {
+      font-size: 16px;
+  }
   .alineadoCarrito {
-    margin: 30px 50px 0px 50px;
+    margin: 30px 40px 0px 40px;
   }
 
   .tituloCarrito {
@@ -397,8 +376,22 @@ width: 100%;
   }
 
 }
+
 @media screen and (min-width: 1024px) {
-  
+  .carritoFinal {
+  margin: 0px 100px 20px 100px; 
+  }
+
+  .imgCarrito {
+      width: 100px;
+      height: 130px;
+      border-radius: 10%;
+  }
+
+  .parrafoCarrito {
+      font-size: 20px;
+  }
+   
 .alineadoCarrito {
   margin: 50px 100px 0px 100px;
 }
@@ -410,6 +403,7 @@ width: 100%;
 .totalPrecio{
 margin: 50px 100px 0px 100px;
 }
+
 .totalTexto {
   font-size: 22px;
 }

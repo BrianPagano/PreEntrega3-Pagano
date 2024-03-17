@@ -6,6 +6,7 @@ const ProductsService = require ('../services/products.service.js')
 const calculateSubtotalAndTotal = require('../utils/calculoTotales-Cart.util.js')
 const authorization = require('../middlewares/authorization-middleware.js')
 const NewPurchaseDTO = require('../DTO/new-purchase.dto.js')
+const separateStocks  = require('../utils/separateStocks.util')
 
 
 //mostrar el carrito elegido
@@ -71,33 +72,29 @@ router.post('/:cid/products/:pid', authorization('user'), async (req, res) => {
 //crear una orden de compra
 router.post('/:cid/purchase', async (req, res) => {
     try {
-        //const { cid } = req.params
+        const { cid } = req.params
         const { user } = req.session
-        const totalPrice = 100
-        const NewTicketInfo = new NewPurchaseDTO (totalPrice, user)
+        const filterById =  await CartService.getCartByID(cid)
+        if (!filterById) {
+            return res.status(404).json({ error: 'El carrito con el ID buscado no existe.'})
+        }   
+        
+        // evaluar stock y divido en 2 arrays
+        const { productsInStock, productsOutOfStock } = separateStocks(filterById.products);
+        // actualizo el carrito con los productos solo sin stock
+        const updatedCart = await CartService.updateCart(cid, productsOutOfStock)
+        if (!updatedCart.success) {
+            return res.status(500).json({ error: updatedCart.message })
+        }
+        
+        // Calcular el total del carrito
+        const { total }  = calculateSubtotalAndTotal(productsInStock)
+        const NewTicketInfo = new NewPurchaseDTO (total, user)
         const result = await CartService.createPurchase(NewTicketInfo) 
         res.status(201).json({ message: 'orden creada correctamente', order: result})
+        
     } catch (error) {
         console.error('Error al crear una orden:', error.message)
-        res.status(500).json({ error: 'Internal Server Error' })
-    }
-})
-
-//actualizar el carrito con un array de productos 
-router.put('/:cid', async (req, res) => {
-    try {
-        const { cid } = req.params
-        const { products } = req.body
-
-        const result = await CartService.updateCart(cid, products)
-
-        if (result.success) {
-            res.status(201).json({ message: result.message })
-        } else {
-            res.status(500).json({ error: result.message })
-        }
-    } catch (error) {
-        console.error('Error al actualizar los productos del carrito:', error.message)
         res.status(500).json({ error: 'Internal Server Error' })
     }
 })

@@ -75,36 +75,37 @@ class CartDao {
         }
     }
 
-  async  updateCart(cid, updatedProducts) {
-    try {
-        // Verificar si el carrito existe
-        const cart = await Carts.findById(cid)
-
-        if (cart) {
-            // Actualizar los productos en el carrito
-            updatedProducts.forEach(updatedProduct => {
-                const existingProduct = cart.products.find(product => product.product.equals(updatedProduct.productId))
-
-                if (existingProduct) {
-                    existingProduct.quantity = updatedProduct.quantity
-                }
-            })
-
-            // Guardar el carrito actualizado en la base de datos
-            await cart.save()
-            
-            console.log('Productos actualizados correctamente en el carrito')
-            return { success: true, message: 'Productos actualizados correctamente en el carrito' }
-        } else {
-            console.log('El carrito no existe en la base de datos')
-            return { success: false, message: 'Carrito no encontrado.' }
+    async updateCart(cid, productsOutOfStock) {
+        try {
+            // Verificar si el carrito existe
+            const cart = await Carts.findById(cid)
+    
+            if (cart) {
+                // Limpiar el carrito eliminando todos los productos existentes
+                cart.products = []
+                
+                // Agregar los productos que quedaron sin stock al carrito
+                productsOutOfStock.forEach(product => {
+                    cart.products.push({
+                        product: new mongoose.Types.ObjectId(product.product._id),
+                        quantity: product.quantity
+                    })
+                })
+                // Guardar el carrito actualizado en la base de datos
+                await cart.save()
+                
+                console.log('Carrito actualizado con productos sin stock')
+                return { success: true, message: 'Carrito actualizado con productos sin stock' }
+            } else {
+                console.log('El carrito no existe en la base de datos')
+                return { success: false, message: 'Carrito no encontrado.' }
+            }
+        } catch (error) {
+            console.error('Error al actualizar el carrito:', error)
+            return { success: false, message: 'Error interno del servidor' }
         }
-    } catch (error) {
-        console.error('Error al actualizar los productos del carrito:', error)
-        return { success: false, message: 'Internal server error' }
-
     }
-  }
+    
 
   async updateProductQuantity(cid, pid, quantity) {
     try {
