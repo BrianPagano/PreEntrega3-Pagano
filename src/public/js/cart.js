@@ -60,26 +60,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         })
     })
 
-    const finalizarCompra = document.getElementById('finalizarCompra');
+    const finalizarCompra = document.getElementById('finalizarCompra')
     if (finalizarCompra) {
         finalizarCompra.addEventListener('click', async function() {
-            const cid = this.dataset.cid;
+            const cid = this.dataset.cid
             try {    
                 const response = await fetch(`/api/carts/${cid}/purchase`, {
                     method: 'POST',
-                });
+                })
     
                 if (!response.ok) {
-                    throw new Error('La solicitud no fue exitosa');
+                    throw new Error('La solicitud no fue exitosa')
                 }
-                const data = await response.json();
-                console.log(data);
+                const data = await response.json()
+                const total = data.total
+                const orderNumber = data.orderNumber
+                // Redirigir al endpoint de compra con los parámetros necesarios
+                window.location.href = `/api/carts/${cid}/purchase?total=${total}&orderNumber=${orderNumber}`
             } catch (error) {
-                console.error('Error al finalizar la compra:', error);
-                // Aquí puedes manejar el error, como mostrar un mensaje de error al usuario
-                alert('Error al finalizar la compra. Por favor, inténtalo de nuevo más tarde.');
+                console.error('Error al finalizar la compra:', error)
             }
-        });
+        })
     }
     
 })

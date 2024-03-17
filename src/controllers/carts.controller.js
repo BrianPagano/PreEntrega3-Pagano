@@ -35,6 +35,27 @@ router.get('/:cid', async (req, res) => {
     }
 })
 
+//mostrar el ticket creado
+router.get('/:cid/purchase', async (req, res) => {
+    try {
+        const { cid } = req.params
+        const { user } = req.session
+        const { total, orderNumber } = req.query
+        const filterById =  await CartService.getCartByID(cid)
+        if (!filterById) {
+            return res.status(404).json({ error: 'El carrito con el ID buscado no existe.'})
+        } 
+        res.render ('ticket', { 
+            user,
+            total,
+            orderNumber,
+            style: 'style.css',})
+    } catch (error) {
+        console.error ('Error al obtener el ticket:', error.message)
+        res.status(500).json({ error: 'Internal Server Error' })
+    }
+})
+
 //crear un carrito
 router.post('/', async (req, res) => {
     try {
@@ -80,7 +101,7 @@ router.post('/:cid/purchase', async (req, res) => {
         }   
         
         // evaluar stock y divido en 2 arrays
-        const { productsInStock, productsOutOfStock } = separateStocks(filterById.products);
+        const { productsInStock, productsOutOfStock } = separateStocks(filterById.products)
         // actualizo el carrito con los productos solo sin stock
         const updatedCart = await CartService.updateCart(cid, productsOutOfStock)
         if (!updatedCart.success) {
@@ -90,9 +111,13 @@ router.post('/:cid/purchase', async (req, res) => {
         // Calcular el total del carrito
         const { total }  = calculateSubtotalAndTotal(productsInStock)
         const NewTicketInfo = new NewPurchaseDTO (total, user)
-        const result = await CartService.createPurchase(NewTicketInfo) 
-        res.status(201).json({ message: 'orden creada correctamente', order: result})
-        
+        const order = await CartService.createPurchase(NewTicketInfo) 
+        const orderNumber = order.createdOrder.code
+        res.status(201).json({ 
+            message: 'ticket creado correctamente',
+            total: total,
+            orderNumber: orderNumber,
+        })    
     } catch (error) {
         console.error('Error al crear una orden:', error.message)
         res.status(500).json({ error: 'Internal Server Error' })
